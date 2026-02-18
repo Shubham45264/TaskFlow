@@ -20,7 +20,18 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Security & Data Parsing
-app.use(cors());
+app.use(cors({
+  origin: [
+    "https://task-flow-iota-seven.vercel.app"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
+}));
+
+// Handle preflight requests
+app.options('*', cors());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
