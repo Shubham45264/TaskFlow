@@ -2,7 +2,9 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import axios from 'axios';
 import { User } from '../types';
 
-const API_BASE_URL = 'http://localhost:5001/api';
+// const API_BASE_URL = 'http://localhost:5001/api';
+const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
+
 
 interface AuthContextType {
   user: User | null;
