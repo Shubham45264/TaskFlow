@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { Project, Task, User, APIResponse } from '../types';
 
-const API_BASE_URL = 'http://localhost:5001/api';
+// const API_BASE_URL = 'http://localhost:5001/api';
+const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
+
 
 // Create axios instance with base URL
 const apiClient = axios.create({

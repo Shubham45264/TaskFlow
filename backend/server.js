@@ -1,7 +1,5 @@
-// **************************************************************************
 // TASKFLOW CORE ENGINE
 // Premium Backend for Project & Task Management
-// **************************************************************************
 
 require('dotenv').config();
 const express = require('express');
