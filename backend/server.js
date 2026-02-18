@@ -1,5 +1,7 @@
+// **************************************************************************
 // TASKFLOW CORE ENGINE
 // Premium Backend for Project & Task Management
+// **************************************************************************
 
 require('dotenv').config();
 const express = require('express');
@@ -8,40 +10,51 @@ const morgan = require('morgan');
 const connectDB = require('./config/db');
 
 // --- DATABASE CONNECTIVITY ---
-// Establishing connection to MongoDB Pulse
 connectDB();
 
 const app = express();
 
 // --- MIDDLEWARE STACK ---
-// Logging requests for development clarity
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-// Security & Data Parsing
+// --- CORS CONFIGURATION ---
 app.use(cors({
-  origin: [
-    "https://task-flow-iota-seven.vercel.app"
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
+  origin: function (origin, callback) {
+    // Allow requests with no origin (Postman, mobile apps, etc.)
+    if (!origin) return callback(null, true);
+
+    // Allow all Vercel deployments
+    if (origin.includes("vercel.app")) {
+      return callback(null, true);
+    }
+
+    // Allow localhost during development
+    if (origin.includes("localhost")) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 // Handle preflight requests
-app.options('*', cors());
+app.options("*", cors());
 
+// --- BODY PARSING ---
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // --- API ROUTE MANAGEMENT ---
-// Mounting individual modules for Users, Projects, and Tasks
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/projects', require('./routes/projectRoutes'));
 app.use('/api/tasks', require('./routes/taskRoutes'));
 
-// --- BASE & HEALTH ENDPOINTS ---
+// --- BASE & HEALTH ENDPOINT ---
 app.get('/', (req, res) => {
   res.status(200).json({
     message: 'Welcome to the TaskFlow Core API',
@@ -50,13 +63,12 @@ app.get('/', (req, res) => {
   });
 });
 
-// --- ERROR ORCHESTRATION ---
-// Handle 404 - Resource Not Found
+// --- 404 HANDLER ---
 app.use((req, res, next) => {
   res.status(404).json({ message: 'The requested resource could not be found.' });
 });
 
-// Global Exception Handler
+// --- GLOBAL ERROR HANDLER ---
 app.use((err, req, res, next) => {
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
   res.status(statusCode).json({
@@ -65,19 +77,18 @@ app.use((err, req, res, next) => {
   });
 });
 
-// --- SERVER LIFECYCLE ---
+// --- SERVER START ---
 const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () => {
   console.log(`
   🚀 Service initialized in ${process.env.NODE_ENV} mode.
-  📡 Pulse detected at http://localhost:${PORT}
+  🌍 Server running on port ${PORT}
   `);
 });
 
-// Handle unhandled promise rejections for system stability
-process.on('unhandledRejection', (err, promise) => {
+// --- HANDLE UNHANDLED PROMISE REJECTIONS ---
+process.on('unhandledRejection', (err) => {
   console.log(`Error: ${err.message}`);
-  // Forceful but graceful shutdown on critical failures
   server.close(() => process.exit(1));
 });
