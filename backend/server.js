@@ -20,18 +20,14 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // --- CORS CONFIGURATION ---
-app.use(cors({
+const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (Postman, mobile apps, etc.)
     if (!origin) return callback(null, true);
 
-    // Allow all Vercel deployments
-    if (origin.includes("vercel.app")) {
-      return callback(null, true);
-    }
-
-    // Allow localhost during development
-    if (origin.includes("localhost")) {
+    if (
+      origin.includes("vercel.app") ||
+      origin.includes("localhost")
+    ) {
       return callback(null, true);
     }
 
@@ -40,7 +36,11 @@ app.use(cors({
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
-}));
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+
 
 // Handle preflight requests
 app.options("*", cors());
