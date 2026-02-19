@@ -44,14 +44,24 @@ TaskFlow is a high-performance, aesthetically pleasing task management applicati
    npm run dev
    ```
 
+## 🌐 Deployment
+
+### Backend (Render)
+- **Root Directory**: `backend`
+- **Build Command**: `npm install`
+- **Start Command**: `node server.js`
+- **Environment Variables**:
+  - `MONGODB_URI`: Your MongoDB URI
+  - `JWT_SECRET`: Your JWT Secret
+  - `NODE_ENV`: `production`
+
+### Frontend (Vercel)
+- **Root Directory**: `frontend`
+- **Framework Preset**: `Vite`
+- **Environment Variables**:
+  - `VITE_API_URL`: `https://taskflow-backend-jgw4.onrender.com` (Your Render Backend URL)
+
+---
+
 ## 📂 Project Structure
-
-- `src/api`: Mock service layer for data orchestration.
-- `src/components`: Reusable UI modules and feature-specific components.
-- `src/hooks`: Custom React hooks for authentication and state management.
-- `src/pages`: Main application views and routing logic.
-- `src/types`: Centralized TypeScript definitions.
-
-## 📝 License
-
-This project is licensed under the MIT License.
+...
